@@ -16,3 +16,9 @@ user://*
 
 # Build
 build/
+
+# Local agent/index caches
+.codegraph/
+.omo/
+AGENTS_LOCAL.md
+docs/draft/
