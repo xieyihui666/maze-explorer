@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "godot": {
+      "type": "local",
+      "command": ["node", "build/index.js"],
+      "cwd": "C:/Users/35345/xief/godot-mcp",
+      "enabled": true
+    }
+  }
+}
