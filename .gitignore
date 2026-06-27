@@ -1,0 +1,18 @@
+# Godot
+.godot/
+*.import
+*.translation
+export_presets.cfg
+
+# Mono
+.mono/
+mono_crash.*
+*.csproj
+*.sln
+
+# User data
+user://*
+*.uid
+
+# Build
+build/

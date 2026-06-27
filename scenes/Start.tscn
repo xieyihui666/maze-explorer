@@ -1,0 +1,251 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/Start.gd" id="1_s"]
+
+[node name="Start" type="Node2D"]
+script = ExtResource("1_s")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="BG" type="ColorRect" parent="UI"]
+offset_right = 1920
+offset_bottom = 1080
+color = Color(0.04, 0.04, 0.08, 1)
+
+[node name="Title" type="Label" parent="UI"]
+offset_left = 710
+offset_top = 80
+offset_right = 1210
+offset_bottom = 150
+text = "迷宫探索者"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 50
+
+[node name="Hint" type="Label" parent="UI"]
+offset_left = 660
+offset_top = 160
+offset_right = 1260
+offset_bottom = 200
+text = "↑↓ 选择模式  Enter 开始  U 排行榜  V 游戏说明"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="Rows" type="VBoxContainer" parent="UI"]
+offset_left = 460
+offset_top = 240
+offset_right = 1460
+offset_bottom = 840
+theme_override_constants/separation = 15
+
+[node name="Row0" type="Panel" parent="UI/Rows"]
+custom_minimum_size = Vector2(1000, 150)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="BG" type="ColorRect" parent="UI/Rows/Row0"]
+layout_mode = 1
+offset_right = 1000
+offset_bottom = 150
+color = Color(0.5, 0.5, 0.5, 0.5)
+mouse_filter = 2
+
+[node name="Name" type="Label" parent="UI/Rows/Row0"]
+offset_left = 30
+offset_top = 30
+offset_right = 500
+offset_bottom = 90
+text = "速通"
+theme_override_font_sizes/font_size = 32
+mouse_filter = 2
+
+[node name="Info" type="Label" parent="UI/Rows/Row0"]
+offset_left = 30
+offset_top = 95
+offset_right = 500
+offset_bottom = 125
+text = ""
+theme_override_font_sizes/font_size = 16
+mouse_filter = 2
+
+[node name="Row1" type="Panel" parent="UI/Rows"]
+custom_minimum_size = Vector2(1000, 150)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="BG" type="ColorRect" parent="UI/Rows/Row1"]
+layout_mode = 1
+offset_right = 1000
+offset_bottom = 150
+color = Color(0.15, 0.15, 0.2, 0.5)
+mouse_filter = 2
+
+[node name="Name" type="Label" parent="UI/Rows/Row1"]
+offset_left = 30
+offset_top = 30
+offset_right = 500
+offset_bottom = 90
+text = "标准"
+theme_override_font_sizes/font_size = 32
+mouse_filter = 2
+
+[node name="Info" type="Label" parent="UI/Rows/Row1"]
+offset_left = 30
+offset_top = 95
+offset_right = 500
+offset_bottom = 125
+text = ""
+theme_override_font_sizes/font_size = 16
+mouse_filter = 2
+
+[node name="Row2" type="Panel" parent="UI/Rows"]
+custom_minimum_size = Vector2(1000, 150)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="BG" type="ColorRect" parent="UI/Rows/Row2"]
+layout_mode = 1
+offset_right = 1000
+offset_bottom = 150
+color = Color(0.15, 0.15, 0.2, 0.5)
+
+[node name="Name" type="Label" parent="UI/Rows/Row2"]
+offset_left = 30
+offset_top = 30
+offset_right = 500
+offset_bottom = 90
+text = "深度"
+theme_override_font_sizes/font_size = 32
+mouse_filter = 2
+
+[node name="Info" type="Label" parent="UI/Rows/Row2"]
+offset_left = 30
+offset_top = 95
+offset_right = 500
+offset_bottom = 125
+text = ""
+theme_override_font_sizes/font_size = 16
+mouse_filter = 2
+
+[node name="LB" type="Control" parent="UI"]
+visible = false
+
+[node name="LBBG" type="ColorRect" parent="UI/LB"]
+offset_left = 460
+offset_top = 140
+offset_right = 1460
+offset_bottom = 920
+color = Color(0.06, 0.06, 0.14, 0.95)
+
+[node name="Title" type="Label" parent="UI/LB"]
+offset_left = 710
+offset_top = 170
+offset_right = 1210
+offset_bottom = 230
+text = "排行榜"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+
+[node name="List" type="Label" parent="UI/LB"]
+offset_left = 560
+offset_top = 260
+offset_right = 1360
+offset_bottom = 800
+text = ""
+theme_override_font_sizes/font_size = 20
+
+[node name="LBHint" type="Label" parent="UI/LB"]
+offset_left = 710
+offset_top = 840
+offset_right = 1210
+offset_bottom = 880
+text = "U / Esc 返回  ← → 切换模式"
+horizontal_alignment = 1
+
+[node name="Footer" type="Label" parent="UI"]
+offset_left = 660
+offset_top = 920
+offset_right = 1260
+offset_bottom = 960
+text = "WASD / 方向键 移动  |  找到绿色出口"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+
+[node name="ExitPanel" type="Control" parent="UI"]
+visible = false
+
+[node name="ExitBG" type="ColorRect" parent="UI/ExitPanel"]
+offset_right = 1920
+offset_bottom = 1080
+color = Color(0, 0, 0, 0.7)
+
+[node name="Panel" type="ColorRect" parent="UI/ExitPanel"]
+offset_left = 760
+offset_top = 390
+offset_right = 1160
+offset_bottom = 590
+color = Color(0.06, 0.06, 0.14, 0.95)
+
+[node name="Title" type="Label" parent="UI/ExitPanel"]
+offset_left = 810
+offset_top = 410
+offset_right = 1110
+offset_bottom = 450
+text = "退出游戏？"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 26
+
+[node name="QuitBtn" type="Button" parent="UI/ExitPanel"]
+offset_left = 810
+offset_top = 470
+offset_right = 1110
+offset_bottom = 510
+text = "退出游戏"
+
+[node name="ContinueBtn" type="Button" parent="UI/ExitPanel"]
+offset_left = 810
+offset_top = 530
+offset_right = 1110
+offset_bottom = 570
+text = "继续游戏"
+
+[node name="HelpPanel" type="Control" parent="UI"]
+visible = false
+
+[node name="HelpBG" type="ColorRect" parent="UI/HelpPanel"]
+offset_right = 1920
+offset_bottom = 1080
+color = Color(0, 0, 0, 0.75)
+
+[node name="HelpBox" type="ColorRect" parent="UI/HelpPanel"]
+offset_left = 510
+offset_top = 140
+offset_right = 1410
+offset_bottom = 940
+color = Color(0.06, 0.06, 0.14, 0.95)
+
+[node name="HelpText" type="Label" parent="UI/HelpPanel"]
+offset_left = 540
+offset_top = 160
+offset_right = 1380
+offset_bottom = 920
+text = "=== 迷宫探索者 ===
+
+↑↓ / 点击模式 → 选择
+Enter / 再次点击 → 开始游戏
+U → 排行榜
+V → 游戏说明
+Esc → 退出
+
+=== 游戏内操作 ===
+
+WASD / 方向键 → 移动
+左键点击小地图 → 放大
+Esc → 暂停菜单
+Z → 作弊面板
+
+=== 游戏规则 ===
+
+在限定时间内找到绿色出口
+周围4格可见，地图迷雾探索
+三种模式：10/30/60分钟"
+theme_override_font_sizes/font_size = 15

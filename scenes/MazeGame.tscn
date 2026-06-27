@@ -1,0 +1,206 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/MazeGame.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/MiniMap.gd" id="2_mini"]
+[ext_resource type="Script" path="res://scripts/BigMap.gd" id="3_bigmap"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = true
+zoom = Vector2(1.8, 1.8)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="TopBar" type="ColorRect" parent="HUD"]
+offset_right = 1920
+offset_bottom = 50
+color = Color(0, 0, 0, 0.7)
+
+[node name="Timer" type="Label" parent="HUD"]
+offset_left = 1660
+offset_top = 10
+offset_right = 1900
+offset_bottom = 42
+text = "10:00"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 22
+
+[node name="Inventory" type="Label" parent="HUD"]
+offset_left = 20
+offset_top = 1030
+offset_right = 600
+offset_bottom = 1060
+text = ""
+theme_override_font_sizes/font_size = 14
+
+[node name="MiniMap" type="Node2D" parent="HUD"]
+script = ExtResource("2_mini")
+position = Vector2(20, 60)
+
+[node name="MiniBG" type="ColorRect" parent="HUD/MiniMap"]
+offset_right = 180
+offset_bottom = 180
+color = Color(0, 0, 0, 0.4)
+
+[node name="GameOver" type="Control" parent="HUD"]
+visible = false
+
+[node name="Panel" type="ColorRect" parent="HUD/GameOver"]
+offset_left = 660
+offset_top = 340
+offset_right = 1260
+offset_bottom = 740
+color = Color(0.05, 0.05, 0.12, 0.95)
+
+[node name="Title" type="Label" parent="HUD/GameOver"]
+offset_left = 760
+offset_top = 380
+offset_right = 1160
+offset_bottom = 440
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 36
+
+[node name="Score" type="Label" parent="HUD/GameOver"]
+offset_left = 760
+offset_top = 470
+offset_right = 1160
+offset_bottom = 510
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+
+[node name="Hint" type="Label" parent="HUD/GameOver"]
+offset_left = 760
+offset_top = 560
+offset_right = 1160
+offset_bottom = 600
+text = "按 Enter 重新开始"
+horizontal_alignment = 1
+
+[node name="PauseMenu" type="Control" parent="HUD"]
+visible = false
+
+[node name="PauseBG" type="ColorRect" parent="HUD/PauseMenu"]
+offset_right = 1920
+offset_bottom = 1080
+color = Color(0, 0, 0, 0.7)
+
+[node name="Panel" type="ColorRect" parent="HUD/PauseMenu"]
+offset_left = 760
+offset_top = 340
+offset_right = 1160
+offset_bottom = 540
+color = Color(0.06, 0.06, 0.14, 0.95)
+
+[node name="Title" type="Label" parent="HUD/PauseMenu"]
+offset_left = 810
+offset_top = 360
+offset_right = 1110
+offset_bottom = 400
+text = "暂停"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
+
+[node name="RestartBtn" type="Button" parent="HUD/PauseMenu"]
+offset_left = 810
+offset_top = 420
+offset_right = 1110
+offset_bottom = 460
+text = "重新开始"
+
+[node name="MenuBtn" type="Button" parent="HUD/PauseMenu"]
+offset_left = 810
+offset_top = 480
+offset_right = 1110
+offset_bottom = 520
+text = "返回主菜单"
+
+[node name="HelpPanel" type="Control" parent="HUD"]
+visible = false
+
+[node name="HelpBG" type="ColorRect" parent="HUD/HelpPanel"]
+offset_right = 1920
+offset_bottom = 1080
+color = Color(0, 0, 0, 0.75)
+
+[node name="HelpBox" type="ColorRect" parent="HUD/HelpPanel"]
+offset_left = 510
+offset_top = 140
+offset_right = 1410
+offset_bottom = 940
+color = Color(0.06, 0.06, 0.14, 0.95)
+
+[node name="HelpText" type="Label" parent="HUD/HelpPanel"]
+offset_left = 540
+offset_top = 160
+offset_right = 1380
+offset_bottom = 920
+text = "=== 迷宫探索者 ===
+
+WASD / 方向键 → 移动
+左键点击小地图 → 放大全览
+Esc → 暂停菜单
+Z → 作弊面板
+V → 游戏说明
+
+=== 游戏规则 ===
+
+在限定时间内找到绿色出口
+周围4格可见，迷雾探索
+走到出口即可通关
+
+=== 三种模式 ===
+
+⚡ 速通 10分钟 80x80
+🎯 标准 30分钟 140x140
+🏰 深度 60分钟 200x200"
+theme_override_font_sizes/font_size = 15
+
+[node name="BigMap" type="Node2D" parent="HUD"]
+visible = false
+script = ExtResource("3_bigmap")
+
+[node name="MapBG" type="ColorRect" parent="HUD/BigMap"]
+offset_right = 1920
+offset_bottom = 1080
+color = Color(0.8, 0.78, 0.73, 1)
+
+[node name="CheatPanel" type="Control" parent="HUD"]
+visible = false
+
+[node name="CheatBG" type="ColorRect" parent="HUD/CheatPanel"]
+offset_left = 660
+offset_top = 440
+offset_right = 1260
+offset_bottom = 600
+color = Color(0.05, 0.05, 0.15, 0.95)
+
+[node name="Title" type="Label" parent="HUD/CheatPanel"]
+offset_left = 710
+offset_top = 455
+offset_right = 1210
+offset_bottom = 485
+text = "作弊代码 (Enter执行 Esc退出)"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="Input" type="LineEdit" parent="HUD/CheatPanel"]
+offset_left = 710
+offset_top = 500
+offset_right = 1210
+offset_bottom = 540
+placeholder_text = "输入代码..."
+
+[node name="Hint" type="Label" parent="HUD/CheatPanel"]
+offset_left = 710
+offset_top = 555
+offset_right = 1210
+offset_bottom = 585
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
