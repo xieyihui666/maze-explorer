@@ -14,20 +14,9 @@ var show_room = false
 var show_friends = false
 var show_nickname = false
 var show_item_select = false
-var show_display = false
 var net_mode = 0
 var room_code = ""
 var my_nickname = ""
-
-var display_presets = [
-	{"name": "1920x1080", "w": 1920, "h": 1080},
-	{"name": "1280x720",  "w": 1280, "h": 720},
-	{"name": "2560x1440", "w": 2560, "h": 1440},
-	{"name": "3840x2160", "w": 3840, "h": 2160},
-]
-var display_mode_names = ["窗口", "窗口化全屏", "全屏"]
-var display_preset_idx = 0
-var display_mode_idx = 2
 
 func _ready():
 	$UI/BG.size = DisplayServer.screen_get_size()
@@ -37,7 +26,6 @@ func _ready():
 	$UI/RoomPanel.visible = false
 	$UI/FriendPanel.visible = false
 	$UI/NickPanel.visible = false
-	$UI/DisplayPanel.visible = false
 	GameState.load_display_settings()
 	var p = load("res://scripts/PlayerProfile.gd")
 	my_nickname = p.get_nickname()
@@ -122,37 +110,7 @@ func _input(event):
 		if event.is_action_pressed("ui_cancel"):
 			show_network = false; $UI/NetworkPanel.visible = false
 		return
-	if show_display:
-		if event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.pressed and event.keycode == KEY_TAB):
-			save_display_and_close()
-		elif event.is_action_pressed("ui_accept"):
-			save_display_and_close()
-		elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			var mp = event.global_position
-			if _in_rect(mp, 580, 615, 380, 420):
-				display_preset_idx = wrapi(display_preset_idx - 1, 0, display_presets.size())
-				update_display_panel()
-			elif _in_rect(mp, 1305, 1340, 380, 420):
-				display_preset_idx = wrapi(display_preset_idx + 1, 0, display_presets.size())
-				update_display_panel()
-			elif _in_rect(mp, 580, 615, 460, 500):
-				display_mode_idx = wrapi(display_mode_idx - 1, 0, display_mode_names.size())
-				update_display_panel()
-			elif _in_rect(mp, 1305, 1340, 460, 500):
-				display_mode_idx = wrapi(display_mode_idx + 1, 0, display_mode_names.size())
-				update_display_panel()
-		elif event.is_action_pressed("move_left"):
-			display_preset_idx = wrapi(display_preset_idx - 1, 0, display_presets.size())
-			update_display_panel()
-		elif event.is_action_pressed("move_right"):
-			display_preset_idx = wrapi(display_preset_idx + 1, 0, display_presets.size())
-			update_display_panel()
-		elif event.is_action_pressed("move_up"):
-			display_mode_idx = wrapi(display_mode_idx - 1, 0, display_mode_names.size())
-			update_display_panel()
-		elif event.is_action_pressed("move_down"):
-			display_mode_idx = wrapi(display_mode_idx + 1, 0, display_mode_names.size())
-			update_display_panel()
+	if $UI/SettingsPanel.visible:
 		return
 	if show_lb:
 		if event.is_action_pressed("p1_ultimate") or event.is_action_pressed("ui_cancel"):
@@ -178,7 +136,7 @@ func _input(event):
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_N:
 		show_nickname = true; $UI/NickPanel.visible = true; $UI/NickPanel/NameInput.text = my_nickname
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
-		open_display_panel()
+		$UI/SettingsPanel.open()
 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var mpos = $UI/NickLabel.get_local_mouse_position()
@@ -279,36 +237,6 @@ func set_nickname():
 		p.set_nickname(name)
 		$UI/NickLabel.text = name
 		show_nickname = false; $UI/NickPanel.visible = false
-
-func open_display_panel():
-	display_preset_idx = 0
-	display_mode_idx = 2
-	for i in range(display_presets.size()):
-		if display_presets[i]["w"] == GameState.display_width and display_presets[i]["h"] == GameState.display_height:
-			display_preset_idx = i
-			break
-	display_mode_idx = GameState.window_mode
-	if display_mode_idx < 0 or display_mode_idx >= display_mode_names.size():
-		display_mode_idx = 2
-	show_display = true; $UI/DisplayPanel.visible = true
-	update_display_panel()
-
-func update_display_panel():
-	var p = display_presets[display_preset_idx]
-	$UI/DisplayPanel/ResLabel.text = "分辨率: " + p["name"]
-	$UI/DisplayPanel/ModeLabel.text = "模式: " + display_mode_names[display_mode_idx]
-
-func save_display_and_close():
-	var p = display_presets[display_preset_idx]
-	GameState.display_width = p["w"]
-	GameState.display_height = p["h"]
-	GameState.window_mode = display_mode_idx
-	GameState.save_display_settings()
-	GameState.apply_display()
-	show_display = false; $UI/DisplayPanel.visible = false
-
-func _in_rect(p: Vector2, left: float, right: float, top: float, bottom: float) -> bool:
-	return p.x >= left and p.x <= right and p.y >= top and p.y <= bottom
 
 func start_game(multi: bool, as_host: bool, is_race: bool):
 	GameState.mode = selected

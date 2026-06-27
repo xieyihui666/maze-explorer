@@ -43,17 +43,6 @@ var loading: bool = false
 var ghost_mode: bool = false
 var ghost_timer: float = 0.0
 var last_valid_pos: Vector2 = Vector2.ZERO
-var show_display: bool = false
-var display_presets = [
-	{"name": "1920x1080", "w": 1920, "h": 1080},
-	{"name": "1280x720",  "w": 1280, "h": 720},
-	{"name": "2560x1440", "w": 2560, "h": 1440},
-	{"name": "3840x2160", "w": 3840, "h": 2160},
-]
-var display_mode_names = ["窗口", "窗口化全屏", "全屏"]
-var display_preset_idx = 0
-var display_mode_idx = 2
-
 enum ItemType { SPEED = 0, TIME = 1, WALL_BREAK = 2, MINIMAP = 3, VISION_UP = 4, GHOST = 5 }
 
 func _ready():
@@ -64,6 +53,7 @@ func _ready():
 	if is_multi:
 		multiplayer.peer_connected.connect(_on_peer_connected)
 		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+		NetworkManager.connection_failed.connect(_on_connection_failed)
 		peer_connected = false
 	if is_multi and not is_host:
 		maze_ready = false
@@ -79,6 +69,7 @@ func _ready():
 	$HUD/PauseMenu.visible = false
 	$HUD/HelpPanel.visible = false
 	$HUD/PauseMenu/RestartBtn.pressed.connect(func(): get_tree().reload_current_scene())
+	$HUD/PauseMenu/SettingsBtn.pressed.connect(func(): paused = false; $HUD/PauseMenu.visible = false; $HUD/SettingsPanel.open())
 	$HUD/PauseMenu/MenuBtn.pressed.connect(func(): NetworkManager.stop(); get_tree().change_scene_to_file("res://scenes/Start.tscn"))
 
 func generate_maze():
@@ -194,8 +185,9 @@ func rcv_maze(mz: Array, ex: int, ey: int, spx: int, spy: int, sz: int):
 @rpc("any_peer", "unreliable_ordered")
 func sync_position(pos: Vector2):
 	var sender = multiplayer.get_remote_sender_id()
-	if sender == 1 and not is_host:
-		pass
+	# 忽略本地回环（自己发送的位置）
+	if sender == 0:
+		return
 	peer_pos = pos
 
 @rpc("authority")
@@ -237,9 +229,18 @@ func sync_race_win():
 func _on_peer_disconnected(_id: int):
 	disconnected = true
 	game_over = true
+	NetworkManager.stop()
 	$HUD/GameOver.visible = true
 	$HUD/GameOver/Title.text = "队友断开连接"
 	$HUD/GameOver/Score.text = ""
+	$HUD/GameOver/Hint.text = "按 Enter 返回主菜单"
+
+func _on_connection_failed(reason: String):
+	connecting = false
+	disconnected = true
+	$HUD/GameOver.visible = true
+	$HUD/GameOver/Title.text = "连接失败"
+	$HUD/GameOver/Score.text = reason
 	$HUD/GameOver/Hint.text = "按 Enter 返回主菜单"
 
 func _process(delta):
@@ -247,7 +248,7 @@ func _process(delta):
 		return
 	if connecting:
 		connect_attempts += 1
-		if connect_attempts > 300:
+		if connect_attempts > 900:
 			connecting = false
 			disconnected = true
 			$HUD/GameOver.visible = true
@@ -484,7 +485,9 @@ func check_items():
 				ItemType.MINIMAP: flash_color = Color.MAGENTA
 				ItemType.VISION_UP: flash_color = Color.YELLOW
 			if is_multi:
-				sync_item_remove.rpc(i)
+				# 只发送给远程玩家，本地自行处理移除
+				for pid in multiplayer.get_peers():
+					sync_item_remove.rpc_id(pid, i)
 			update_hud()
 	for i in range(to_remove.size() - 1, -1, -1):
 		items.remove_at(to_remove[i])
@@ -585,40 +588,10 @@ func _input(event):
 		return
 
 	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
-		open_display_panel()
+		$HUD/SettingsPanel.open()
 		return
 
-	if show_display:
-		if event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.pressed and event.keycode == KEY_TAB):
-			save_display_and_close()
-		elif event.is_action_pressed("ui_accept"):
-			save_display_and_close()
-		elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			var mp = event.global_position
-			if _in_rect(mp, 580, 615, 380, 420):
-				display_preset_idx = wrapi(display_preset_idx - 1, 0, display_presets.size())
-				update_display_panel()
-			elif _in_rect(mp, 1305, 1340, 380, 420):
-				display_preset_idx = wrapi(display_preset_idx + 1, 0, display_presets.size())
-				update_display_panel()
-			elif _in_rect(mp, 580, 615, 460, 500):
-				display_mode_idx = wrapi(display_mode_idx - 1, 0, display_mode_names.size())
-				update_display_panel()
-			elif _in_rect(mp, 1305, 1340, 460, 500):
-				display_mode_idx = wrapi(display_mode_idx + 1, 0, display_mode_names.size())
-				update_display_panel()
-		elif event.is_action_pressed("move_left"):
-			display_preset_idx = wrapi(display_preset_idx - 1, 0, display_presets.size())
-			update_display_panel()
-		elif event.is_action_pressed("move_right"):
-			display_preset_idx = wrapi(display_preset_idx + 1, 0, display_presets.size())
-			update_display_panel()
-		elif event.is_action_pressed("move_up"):
-			display_mode_idx = wrapi(display_mode_idx - 1, 0, display_mode_names.size())
-			update_display_panel()
-		elif event.is_action_pressed("move_down"):
-			display_mode_idx = wrapi(display_mode_idx + 1, 0, display_mode_names.size())
-			update_display_panel()
+	if $HUD/SettingsPanel.visible:
 		return
 
 	if show_map:
@@ -818,35 +791,3 @@ func exec_cheat(code: String):
 			inventory[i] += 1
 		update_hud()
 	$HUD/CheatPanel/Input.release_focus()
-
-func open_display_panel():
-	display_preset_idx = 0
-	display_mode_idx = 2
-	for i in range(display_presets.size()):
-		if display_presets[i]["w"] == GameState.display_width and display_presets[i]["h"] == GameState.display_height:
-			display_preset_idx = i
-			break
-	display_mode_idx = GameState.window_mode
-	if display_mode_idx < 0 or display_mode_idx >= display_mode_names.size():
-		display_mode_idx = 2
-	show_display = true
-	$HUD/DisplayPanel.visible = true
-	update_display_panel()
-
-func update_display_panel():
-	var p = display_presets[display_preset_idx]
-	$HUD/DisplayPanel/ResLabel.text = "分辨率: " + p["name"]
-	$HUD/DisplayPanel/ModeLabel.text = "模式: " + display_mode_names[display_mode_idx]
-
-func save_display_and_close():
-	var p = display_presets[display_preset_idx]
-	GameState.display_width = p["w"]
-	GameState.display_height = p["h"]
-	GameState.window_mode = display_mode_idx
-	GameState.save_display_settings()
-	GameState.apply_display()
-	show_display = false
-	$HUD/DisplayPanel.visible = false
-
-func _in_rect(p: Vector2, left: float, right: float, top: float, bottom: float) -> bool:
-	return p.x >= left and p.x <= right and p.y >= top and p.y <= bottom
