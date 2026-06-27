@@ -1,6 +1,7 @@
 extends Node
 
 const PORT = 42069
+const CONNECT_TIMEOUT = 10.0
 
 var is_host: bool = false
 var is_multi: bool = false
@@ -10,10 +11,14 @@ var public_ip: String = ""
 var upnp_ok: bool = false
 
 signal upnp_status(success: bool, message: String)
+signal connection_failed(reason: String)
 
 func start_host():
 	peer = ENetMultiplayerPeer.new()
-	peer.create_server(PORT)
+	var err = peer.create_server(PORT)
+	if err != OK:
+		push_error("创建服务器失败: " + str(err))
+		return
 	multiplayer.multiplayer_peer = peer
 	is_host = true
 	is_multi = true
@@ -21,7 +26,10 @@ func start_host():
 
 func start_client(address: String):
 	peer = ENetMultiplayerPeer.new()
-	peer.create_client(address, PORT)
+	var err = peer.create_client(address, PORT)
+	if err != OK:
+		connection_failed.emit("无法连接到 " + address + ":" + str(PORT))
+		return
 	multiplayer.multiplayer_peer = peer
 	is_host = false
 	is_multi = true

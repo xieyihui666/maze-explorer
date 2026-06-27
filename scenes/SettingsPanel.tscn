@@ -1,0 +1,115 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/SettingsPanel.gd" id="1_script"]
+
+[node name="SettingsPanel" type="Control"]
+anchors_preset = 15
+script = ExtResource("1_script")
+mouse_filter = 2
+
+[node name="BG" type="ColorRect" parent="."]
+anchors_preset = 15
+color = Color(0, 0, 0, 0.7)
+mouse_filter = 2
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+offset_left = 560.0
+offset_top = 240.0
+offset_right = 1360.0
+offset_bottom = 640.0
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="VBox"]
+layout_mode = 2
+text = "设  置"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+
+[node name="Sep1" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="ResRow" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ResLabel" type="Label" parent="VBox/ResRow"]
+layout_mode = 2
+text = "分辨率"
+theme_override_font_sizes/font_size = 20
+
+[node name="ResSpacer" type="Control" parent="VBox/ResRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResLeftBtn" type="Button" parent="VBox/ResRow"]
+layout_mode = 2
+text = "◀"
+theme_override_font_sizes/font_size = 18
+
+[node name="ResValue" type="Label" parent="VBox/ResRow"]
+layout_mode = 2
+text = "1920x1080"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 20
+custom_minimum_size = Vector2(160, 0)
+
+[node name="ResRightBtn" type="Button" parent="VBox/ResRow"]
+layout_mode = 2
+text = "▶"
+theme_override_font_sizes/font_size = 18
+
+[node name="ModeRow" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ModeLabel" type="Label" parent="VBox/ModeRow"]
+layout_mode = 2
+text = "窗口模式"
+theme_override_font_sizes/font_size = 20
+
+[node name="ModeSpacer" type="Control" parent="VBox/ModeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ModeLeftBtn" type="Button" parent="VBox/ModeRow"]
+layout_mode = 2
+text = "◀"
+theme_override_font_sizes/font_size = 18
+
+[node name="ModeValue" type="Label" parent="VBox/ModeRow"]
+layout_mode = 2
+text = "全屏"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 20
+custom_minimum_size = Vector2(160, 0)
+
+[node name="ModeRightBtn" type="Button" parent="VBox/ModeRow"]
+layout_mode = 2
+text = "▶"
+theme_override_font_sizes/font_size = 18
+
+[node name="Sep2" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="Hint" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Enter 保存并应用   Tab/Esc 返回"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 13
+
+[node name="BtnRow" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="SaveBtn" type="Button" parent="VBox/BtnRow"]
+layout_mode = 2
+text = "保存并应用"
+theme_override_font_sizes/font_size = 16
+
+[node name="CancelBtn" type="Button" parent="VBox/BtnRow"]
+layout_mode = 2
+text = "取消"
+theme_override_font_sizes/font_size = 16

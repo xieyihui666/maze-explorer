@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/Start.gd" id="1_s"]
+[ext_resource type="PackedScene" path="res://scenes/SettingsPanel.tscn" id="3_settings"]
 
 [node name="Start" type="Node2D"]
 script = ExtResource("1_s")
@@ -40,12 +41,20 @@ text = "按N改名"
 horizontal_alignment = 2
 theme_override_font_sizes/font_size = 11
 
+[node name="SettingsBtn" type="Button" parent="UI"]
+offset_left = 1820
+offset_top = 80
+offset_right = 1900
+offset_bottom = 108
+text = "⚙"
+theme_override_font_sizes/font_size = 14
+
 [node name="Hint" type="Label" parent="UI"]
 offset_left = 660
 offset_top = 140
 offset_right = 1260
 offset_bottom = 180
-text = "↑↓ 选择模式  Enter 开始  U 排行榜  V 说明  Tab 画面"
+text = "↑↓ 选择模式  Enter 开始  U 排行榜  V 说明"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 18
 
@@ -202,7 +211,7 @@ color = Color(0, 0, 0, 0.7)
 offset_left = 760
 offset_top = 390
 offset_right = 1160
-offset_bottom = 590
+offset_bottom = 650
 color = Color(0.06, 0.06, 0.14, 0.95)
 
 [node name="Title" type="Label" parent="UI/ExitPanel"]
@@ -218,14 +227,21 @@ theme_override_font_sizes/font_size = 26
 offset_left = 810
 offset_top = 470
 offset_right = 1110
-offset_bottom = 510
+offset_bottom = 508
 text = "退出游戏"
+
+[node name="SettingsBtn" type="Button" parent="UI/ExitPanel"]
+offset_left = 810
+offset_top = 518
+offset_right = 1110
+offset_bottom = 556
+text = "设置"
 
 [node name="ContinueBtn" type="Button" parent="UI/ExitPanel"]
 offset_left = 810
-offset_top = 530
+offset_top = 568
 offset_right = 1110
-offset_bottom = 570
+offset_bottom = 606
 text = "继续游戏"
 
 [node name="HelpPanel" type="Control" parent="UI"]
@@ -552,93 +568,4 @@ offset_right = 1060
 offset_bottom = 570
 text = "取消"
 
-[node name="DisplayPanel" type="Control" parent="UI"]
-visible = false
-
-[node name="DisplayBG" type="ColorRect" parent="UI/DisplayPanel"]
-offset_right = 1920
-offset_bottom = 1080
-color = Color(0, 0, 0, 0.7)
-
-[node name="Panel" type="ColorRect" parent="UI/DisplayPanel"]
-offset_left = 560
-offset_top = 240
-offset_right = 1360
-offset_bottom = 740
-color = Color(0.06, 0.06, 0.14, 0.95)
-
-[node name="Title" type="Label" parent="UI/DisplayPanel"]
-offset_left = 610
-offset_top = 270
-offset_right = 1310
-offset_bottom = 320
-text = "画面设置"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 28
-
-[node name="ResLeft" type="Label" parent="UI/DisplayPanel"]
-offset_left = 580
-offset_top = 380
-offset_right = 615
-offset_bottom = 420
-text = "<"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 22
-
-[node name="ResLabel" type="Label" parent="UI/DisplayPanel"]
-offset_left = 620
-offset_top = 380
-offset_right = 1300
-offset_bottom = 420
-text = "分辨率: 1920x1080"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 22
-
-[node name="ResRight" type="Label" parent="UI/DisplayPanel"]
-offset_left = 1305
-offset_top = 380
-offset_right = 1340
-offset_bottom = 420
-text = ">"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 22
-
-[node name="ModeLeft" type="Label" parent="UI/DisplayPanel"]
-offset_left = 580
-offset_top = 460
-offset_right = 615
-offset_bottom = 500
-text = "<"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 22
-
-[node name="ModeLabel" type="Label" parent="UI/DisplayPanel"]
-offset_left = 620
-offset_top = 460
-offset_right = 1300
-offset_bottom = 500
-text = "模式: 全屏"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 22
-
-[node name="ModeRight" type="Label" parent="UI/DisplayPanel"]
-offset_left = 1305
-offset_top = 460
-offset_right = 1340
-offset_bottom = 500
-text = ">"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 22
-
-[node name="Hint" type="Label" parent="UI/DisplayPanel"]
-offset_left = 560
-offset_top = 580
-offset_right = 1360
-offset_bottom = 680
-text = "← → / 点击 < > 切换分辨率
-↑ ↓ / 点击 < > 切换模式
-
-Enter 保存并应用
-Tab / Esc 返回"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 14
+[node name="SettingsPanel" parent="UI" instance=ExtResource("3_settings")]
