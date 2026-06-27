@@ -26,7 +26,7 @@ offset_left = 660
 offset_top = 160
 offset_right = 1260
 offset_bottom = 200
-text = "↑↓ 选择模式  Enter 开始  U 排行榜  V 游戏说明"
+text = "↑↓ 选择模式  Enter 开始  U 排行榜  V 说明"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 18
 
@@ -54,7 +54,7 @@ offset_left = 30
 offset_top = 30
 offset_right = 500
 offset_bottom = 90
-text = "速通"
+text = "⚡ 速通 10分钟"
 theme_override_font_sizes/font_size = 32
 mouse_filter = 2
 
@@ -84,7 +84,7 @@ offset_left = 30
 offset_top = 30
 offset_right = 500
 offset_bottom = 90
-text = "标准"
+text = "🎯 标准 30分钟"
 theme_override_font_sizes/font_size = 32
 mouse_filter = 2
 
@@ -114,7 +114,7 @@ offset_left = 30
 offset_top = 30
 offset_right = 500
 offset_bottom = 90
-text = "深度"
+text = "🏰 深度 60分钟"
 theme_override_font_sizes/font_size = 32
 mouse_filter = 2
 
@@ -159,7 +159,7 @@ offset_left = 710
 offset_top = 840
 offset_right = 1210
 offset_bottom = 880
-text = "U / Esc 返回  ← → 切换模式"
+text = "U / Esc 返回"
 horizontal_alignment = 1
 
 [node name="Footer" type="Label" parent="UI"]
@@ -231,26 +231,20 @@ offset_right = 1380
 offset_bottom = 920
 text = "=== 迷宫探索者 ===
 
-↑↓ / 点击模式 → 选择
-Enter / 再次点击 → 选择玩法
-U → 排行榜
-V → 游戏说明
-Esc → 退出
+↑↓/点击→选择  Enter→玩法
+U→排行榜  V→说明  Esc→退出
 
-=== 游戏内操作 ===
+=== 游戏内 ===
 
-WASD / 方向键 → 移动
-左键点击小地图 → 放大
-Esc → 暂停菜单
-Z → 作弊面板
-E → 传送到队友
+WASD/方向键→移动
+左键小地图→放大  Esc→暂停
+Z→作弊  V→说明
 
-=== 多人在线 ===
+=== 多人联机 ===
 
-创建房间等待好友加入
-输入好友IP加入房间
-合作：携手找出口
-比赛：谁先到谁赢"
+合作: 创建→生成房间码→好友加入
+比赛: 谁先到出口谁赢
+E键→传送队友"
 theme_override_font_sizes/font_size = 15
 
 [node name="NetworkPanel" type="Control" parent="UI"]
@@ -263,68 +257,215 @@ color = Color(0, 0, 0, 0.7)
 
 [node name="NetBox" type="ColorRect" parent="UI/NetworkPanel"]
 offset_left = 660
-offset_top = 240
+offset_top = 310
 offset_right = 1260
-offset_bottom = 800
+offset_bottom = 720
 color = Color(0.06, 0.06, 0.14, 0.95)
 
 [node name="Title" type="Label" parent="UI/NetworkPanel"]
 offset_left = 760
-offset_top = 260
+offset_top = 330
 offset_right = 1160
-offset_bottom = 300
+offset_bottom = 370
 text = "选择玩法"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 24
 
 [node name="SoloBtn" type="Button" parent="UI/NetworkPanel"]
 offset_left = 760
-offset_top = 330
+offset_top = 400
 offset_right = 1160
-offset_bottom = 380
+offset_bottom = 450
 text = "单人游戏"
 
 [node name="CoopBtn" type="Button" parent="UI/NetworkPanel"]
 offset_left = 760
-offset_top = 400
+offset_top = 470
 offset_right = 1160
-offset_bottom = 450
+offset_bottom = 520
 text = "联机合作（创建房间）"
 
 [node name="RaceBtn" type="Button" parent="UI/NetworkPanel"]
 offset_left = 760
-offset_top = 470
-offset_right = 1160
-offset_bottom = 520
-text = "联机比赛（创建房间）"
-
-[node name="IPInput" type="LineEdit" parent="UI/NetworkPanel"]
-offset_left = 760
-offset_top = 550
+offset_top = 540
 offset_right = 1160
 offset_bottom = 590
-placeholder_text = "输入好友IP地址加入"
-text = "127.0.0.1"
+text = "联机比赛（创建房间）"
 
-[node name="JoinBtn" type="Button" parent="UI/NetworkPanel"]
+[node name="CodeJoinBtn" type="Button" parent="UI/NetworkPanel"]
 offset_left = 760
 offset_top = 610
 offset_right = 1160
 offset_bottom = 660
-text = "加入好友房间"
-
-[node name="NetHint" type="Label" parent="UI/NetworkPanel"]
-offset_left = 760
-offset_top = 690
-offset_right = 1160
-offset_bottom = 720
-text = "创建房间→等好友加入 | 加入→输IP点加入"
-horizontal_alignment = 1
+text = "输入房间码加入"
 
 [node name="NetEsc" type="Label" parent="UI/NetworkPanel"]
 offset_left = 760
-offset_top = 730
+offset_top = 680
 offset_right = 1160
-offset_bottom = 760
+offset_bottom = 710
 text = "Esc 返回"
 horizontal_alignment = 1
+
+[node name="RoomPanel" type="Control" parent="UI"]
+visible = false
+
+[node name="RoomBG" type="ColorRect" parent="UI/RoomPanel"]
+offset_right = 1920
+offset_bottom = 1080
+color = Color(0, 0, 0, 0.7)
+
+[node name="RoomBox" type="ColorRect" parent="UI/RoomPanel"]
+offset_left = 660
+offset_top = 260
+offset_right = 1260
+offset_bottom = 780
+color = Color(0.06, 0.06, 0.14, 0.95)
+
+[node name="Title" type="Label" parent="UI/RoomPanel"]
+offset_left = 760
+offset_top = 280
+offset_right = 1160
+offset_bottom = 320
+text = "联机合作"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+
+[node name="CreateBtn" type="Button" parent="UI/RoomPanel"]
+offset_left = 760
+offset_top = 350
+offset_right = 1160
+offset_bottom = 400
+text = "创建房间"
+
+[node name="JoinBtn" type="Button" parent="UI/RoomPanel"]
+offset_left = 760
+offset_top = 420
+offset_right = 1160
+offset_bottom = 470
+text = "加入房间（输入IP）"
+
+[node name="IPInput" type="LineEdit" parent="UI/RoomPanel"]
+offset_left = 760
+offset_top = 490
+offset_right = 1160
+offset_bottom = 530
+placeholder_text = "输入好友IP地址"
+text = "127.0.0.1"
+
+[node name="RoomCode" type="Label" parent="UI/RoomPanel"]
+offset_left = 660
+offset_top = 560
+offset_right = 1260
+offset_bottom = 640
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+visible = false
+
+[node name="CodeJoin" type="Control" parent="UI/RoomPanel"]
+visible = false
+
+[node name="CodeTitle" type="Label" parent="UI/RoomPanel/CodeJoin"]
+offset_left = 760
+offset_top = 350
+offset_right = 1160
+offset_bottom = 390
+text = "输入好友的房间码和IP"
+horizontal_alignment = 1
+
+[node name="CodeInput" type="LineEdit" parent="UI/RoomPanel/CodeJoin"]
+offset_left = 810
+offset_top = 410
+offset_right = 1110
+offset_bottom = 450
+placeholder_text = "6位房间码"
+
+[node name="IPInput2" type="LineEdit" parent="UI/RoomPanel/CodeJoin"]
+offset_left = 810
+offset_top = 470
+offset_right = 1110
+offset_bottom = 510
+placeholder_text = "好友IP地址"
+text = "127.0.0.1"
+
+[node name="CodeBtn" type="Button" parent="UI/RoomPanel/CodeJoin"]
+offset_left = 860
+offset_top = 530
+offset_right = 1060
+offset_bottom = 570
+text = "加入"
+
+[node name="FriendsBtn" type="Button" parent="UI/RoomPanel"]
+offset_left = 760
+offset_top = 660
+offset_right = 1160
+offset_bottom = 700
+text = "从好友列表选择IP"
+
+[node name="BackBtn" type="Button" parent="UI/RoomPanel"]
+offset_left = 860
+offset_top = 720
+offset_right = 1060
+offset_bottom = 755
+text = "返回"
+
+[node name="FriendPanel" type="Control" parent="UI"]
+visible = false
+
+[node name="FBG" type="ColorRect" parent="UI/FriendPanel"]
+offset_right = 1920
+offset_bottom = 1080
+color = Color(0, 0, 0, 0.7)
+
+[node name="FBox" type="ColorRect" parent="UI/FriendPanel"]
+offset_left = 560
+offset_top = 180
+offset_right = 1360
+offset_bottom = 860
+color = Color(0.06, 0.06, 0.14, 0.95)
+
+[node name="Title" type="Label" parent="UI/FriendPanel"]
+offset_left = 710
+offset_top = 200
+offset_right = 1210
+offset_bottom = 240
+text = "好友列表"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+
+[node name="FriendList" type="Label" parent="UI/FriendPanel"]
+offset_left = 610
+offset_top = 260
+offset_right = 1310
+offset_bottom = 620
+text = ""
+theme_override_font_sizes/font_size = 16
+
+[node name="NameInput" type="LineEdit" parent="UI/FriendPanel"]
+offset_left = 660
+offset_top = 640
+offset_right = 960
+offset_bottom = 680
+placeholder_text = "好友名称"
+
+[node name="IPInput" type="LineEdit" parent="UI/FriendPanel"]
+offset_left = 980
+offset_top = 640
+offset_right = 1260
+offset_bottom = 680
+placeholder_text = "好友IP"
+
+[node name="AddBtn" type="Button" parent="UI/FriendPanel"]
+offset_left = 760
+offset_top = 700
+offset_right = 960
+offset_bottom = 740
+text = "添加好友"
+
+[node name="CloseBtn" type="Button" parent="UI/FriendPanel"]
+offset_left = 980
+offset_top = 700
+offset_right = 1160
+offset_bottom = 740
+text = "关闭"

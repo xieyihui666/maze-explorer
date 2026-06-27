@@ -37,6 +37,16 @@ offset_bottom = 1060
 text = ""
 theme_override_font_sizes/font_size = 14
 
+[node name="StatusLabel" type="Label" parent="HUD"]
+offset_left = 710
+offset_top = 520
+offset_right = 1210
+offset_bottom = 560
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
+visible = false
+
 [node name="MiniMap" type="Node2D" parent="HUD"]
 script = ExtResource("2_mini")
 position = Vector2(20, 60)
@@ -79,7 +89,7 @@ offset_left = 760
 offset_top = 560
 offset_right = 1160
 offset_bottom = 600
-text = "按 Enter 重新开始"
+text = "按 Enter 返回主菜单"
 horizontal_alignment = 1
 
 [node name="PauseMenu" type="Control" parent="HUD"]
@@ -143,22 +153,15 @@ offset_bottom = 920
 text = "=== 迷宫探索者 ===
 
 WASD / 方向键 → 移动
-左键点击小地图 → 放大全览
-Esc → 暂停菜单
-Z → 作弊面板
-V → 游戏说明
+左键小地图 → 放大  Esc → 暂停
+Z → 作弊  V → 说明  E → 传送队友
 
-=== 游戏规则 ===
+=== 多人联机 ===
 
-在限定时间内找到绿色出口
-周围4格可见，迷雾探索
-走到出口即可通关
-
-=== 三种模式 ===
-
-⚡ 速通 10分钟 80x80
-🎯 标准 30分钟 140x140
-🏰 深度 60分钟 200x200"
+创建房间 → 生成6位房间码
+加入房间 → 输入好友IP
+合作: 携手找出口
+比赛: 谁先到谁赢"
 theme_override_font_sizes/font_size = 15
 
 [node name="BigMap" type="Node2D" parent="HUD"]

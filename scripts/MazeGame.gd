@@ -32,6 +32,15 @@ var is_race: bool = false
 var maze_ready: bool = true
 var time_sync_timer: float = 0.0
 var disconnected: bool = false
+var peer_connected: bool = false
+var connecting: bool = false
+var connect_attempts: int = 0
+var flash_alpha: float = 0.0
+var flash_color: Color = Color.WHITE
+var particles: Array = []
+var exit_pulse: float = 0.0
+var camera_zoom_target: float = 1.8
+var loading: bool = false
 
 enum ItemType { SPEED = 0, TIME = 1, WALL_BREAK = 2, MINIMAP = 3, VISION_UP = 4 }
 
@@ -43,12 +52,16 @@ func _ready():
 	if is_multi:
 		multiplayer.peer_connected.connect(_on_peer_connected)
 		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+		peer_connected = false
 	if is_multi and not is_host:
 		maze_ready = false
+		connecting = true
 		NetworkManager.start_client(GameState.join_ip)
-		await get_tree().create_timer(0.5).timeout
 	else:
 		generate_maze()
+		if is_multi:
+			$HUD/StatusLabel.text = "等待好友加入..."
+			$HUD/StatusLabel.visible = true
 	player_pos = Vector2(spawn_pos.x * CELL + CELL/2, spawn_pos.y * CELL + CELL/2)
 	$Camera2D.global_position = player_pos
 	$HUD/PauseMenu.visible = false
@@ -62,7 +75,14 @@ func generate_maze():
 	item_timers.clear()
 	speed_mult = 1.0
 	inventory = [0, 0, 0, 0, 0]
+	particles.clear()
+	flash_alpha = 0.0
 	var sz = GameState.maze_size
+	if sz >= 140:
+		loading = true
+		$HUD/StatusLabel.text = "生成迷宫中..."
+		$HUD/StatusLabel.visible = true
+		await get_tree().process_frame
 	maze.clear()
 	explored.clear()
 	for y in range(sz):
@@ -113,6 +133,8 @@ func generate_maze():
 			if cnt >= 2:
 				maze[y][x] = false
 
+	loading = false
+	$HUD/StatusLabel.visible = false
 	spawn_items()
 
 func spawn_items():
@@ -136,6 +158,11 @@ func _on_peer_connected(id: int):
 	if is_host:
 		rcv_maze.rpc_id(id, maze, exit_pos.x, exit_pos.y, spawn_pos.x, spawn_pos.y, GameState.maze_size)
 		send_items.rpc_id(id, items)
+		peer_connected = true
+		$HUD/StatusLabel.visible = false
+	else:
+		peer_connected = true
+		connecting = false
 
 @rpc("authority", "reliable")
 func rcv_maze(mz: Array, ex: int, ey: int, spx: int, spy: int, sz: int):
@@ -206,12 +233,35 @@ func _on_peer_disconnected(_id: int):
 func _process(delta):
 	if disconnected:
 		return
+	if connecting:
+		connect_attempts += 1
+		if connect_attempts > 300:
+			connecting = false
+			disconnected = true
+			$HUD/GameOver.visible = true
+			$HUD/GameOver/Title.text = "连接超时"
+			$HUD/GameOver/Score.text = ""
+			$HUD/GameOver/Hint.text = "按 Enter 返回主菜单"
+		else:
+			$HUD/StatusLabel.text = "正在连接... %d" % (connect_attempts / 60)
+			$HUD/StatusLabel.visible = true
+		return
 	if not maze_ready:
+		return
+	if is_multi and not peer_connected:
 		return
 	if game_over or show_map or paused or show_help:
 		if show_map:
 			$HUD/BigMap.queue_redraw()
+		flash_alpha = move_toward(flash_alpha, 0, delta * 3)
+		queue_redraw()
 		return
+
+	flash_alpha = move_toward(flash_alpha, 0, delta * 3)
+	exit_pulse += delta * 3
+	camera_zoom_target = 2.0 if speed_mult > 1.5 else 1.8
+	$Camera2D.zoom = $Camera2D.zoom.lerp(Vector2(camera_zoom_target, camera_zoom_target), delta * 4)
+	update_particles(delta)
 
 	time_left -= delta
 	if time_left <= 0:
@@ -310,6 +360,16 @@ func _draw():
 	if is_multi and peer_pos != Vector2.ZERO:
 		draw_circle(peer_pos, 10, Color(1, 0.4, 0.3))
 
+	for p in particles:
+		draw_circle(p["pos"], p["size"], Color(p["color"], p["life"] * 2))
+
+	if flash_alpha > 0.01:
+		draw_rect(Rect2(0, 0, get_viewport().get_visible_rect().size.x * 10, get_viewport().get_visible_rect().size.y * 10), Color(flash_color, flash_alpha), true)
+
+	if game_over and not is_race:
+		var pulse = sin(exit_pulse) * 0.3 + 0.7
+		draw_rect(Rect2(gx + 4, gy + 4, CELL - 8, CELL - 8), Color(0.15, 0.7, 0.25, pulse))
+
 	for item in items:
 		var ix = int(item["pos"].x / CELL)
 		var iy = int(item["pos"].y / CELL)
@@ -372,6 +432,14 @@ func check_items():
 		if player_pos.distance_to(item["pos"]) < 20:
 			to_remove.append(i)
 			inventory[item["type"]] += 1
+			spawn_particles(item["pos"], item["type"])
+			flash_alpha = 0.3
+			match item["type"]:
+				ItemType.SPEED: flash_color = Color.CYAN
+				ItemType.TIME: flash_color = Color.GREEN
+				ItemType.WALL_BREAK: flash_color = Color.RED
+				ItemType.MINIMAP: flash_color = Color.MAGENTA
+				ItemType.VISION_UP: flash_color = Color.YELLOW
 			if is_multi:
 				sync_item_remove.rpc(i)
 			update_hud()
@@ -394,6 +462,7 @@ func break_walls_near_player():
 	var sz = GameState.maze_size
 	var pcx = int(player_pos.x / CELL)
 	var pcy = int(player_pos.y / CELL)
+	var count = 0
 	for dy in range(-2, 3):
 		for dx in range(-2, 3):
 			var cx = pcx + dx
@@ -401,6 +470,39 @@ func break_walls_near_player():
 			if cx > 1 and cx < sz - 2 and cy > 1 and cy < sz - 2:
 				if maze[cy][cx]:
 					maze[cy][cx] = false
+					count += 1
+	if count > 0:
+		flash_alpha = 0.5
+		flash_color = Color.RED
+		for i in range(count * 3):
+			var ppos = Vector2(pcx * CELL + randf() * CELL * 5 - CELL * 2, pcy * CELL + randf() * CELL * 5 - CELL * 2)
+			spawn_particles(ppos, ItemType.WALL_BREAK)
+
+func spawn_particles(pos: Vector2, type: int):
+	var colors = [Color.CYAN, Color.GREEN, Color.RED, Color.MAGENTA, Color.YELLOW]
+	var c = colors[type]
+	for i in range(8):
+		var angle = randf() * TAU
+		var speed = randf_range(40, 120)
+		particles.append({
+			"pos": pos,
+			"vel": Vector2(cos(angle), sin(angle)) * speed,
+			"life": randf_range(0.3, 0.8),
+			"color": c,
+			"size": randf_range(2, 5)
+		})
+
+func update_particles(delta):
+	var to_remove = []
+	for i in range(particles.size()):
+		var p = particles[i]
+		p["life"] -= delta
+		p["pos"] += p["vel"] * delta
+		p["vel"] *= 0.95
+		if p["life"] <= 0:
+			to_remove.append(i)
+	for i in range(to_remove.size() - 1, -1, -1):
+		particles.remove_at(to_remove[i])
 
 func _input(event):
 	if show_map:

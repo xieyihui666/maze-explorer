@@ -26,3 +26,10 @@ func stop():
 	multiplayer.multiplayer_peer = null
 	is_host = false
 	is_multi = false
+
+static func get_local_ip() -> String:
+	for ip in IP.get_local_addresses():
+		if ip.begins_with("192.168.") or ip.begins_with("10.") or ip.begins_with("172."):
+			if not ip.begins_with("172.1") and not ip.begins_with("172.0"):
+				return ip
+	return "127.0.0.1"
