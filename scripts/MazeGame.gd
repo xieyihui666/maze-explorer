@@ -47,6 +47,7 @@ var last_valid_pos: Vector2 = Vector2.ZERO
 enum ItemType { SPEED = 0, TIME = 1, WALL_BREAK = 2, MINIMAP = 3, VISION_UP = 4, GHOST = 5 }
 
 func _ready():
+	GameState.apply_display()
 	is_multi = GameState.is_multi
 	is_host = GameState.is_host
 	is_race = GameState.is_race
