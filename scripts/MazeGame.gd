@@ -358,12 +358,6 @@ func is_passable(pos: Vector2) -> bool:
 			return false
 	return true
 
-func is_in_bounds(pos: Vector2) -> bool:
-	var sz = GameState.maze_size
-	var cx = int(pos.x / CELL)
-	var cy = int(pos.y / CELL)
-	return cx >= 0 and cx < sz and cy >= 0 and cy < sz
-
 func _draw():
 	if maze.is_empty():
 		return
@@ -608,7 +602,7 @@ func _input(event):
 
 	if event is InputEventKey and event.pressed and not game_over and not paused:
 		match event.keycode:
-		KEY_1:
+			KEY_1:
 				use_item(0)
 			KEY_2:
 				use_item(1)
