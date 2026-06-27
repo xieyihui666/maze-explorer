@@ -463,8 +463,8 @@ func break_walls_near_player():
 	var pcx = int(player_pos.x / CELL)
 	var pcy = int(player_pos.y / CELL)
 	var count = 0
-	for dy in range(-2, 3):
-		for dx in range(-2, 3):
+	for dy in range(-1, 2):
+		for dx in range(-1, 2):
 			var cx = pcx + dx
 			var cy = pcy + dy
 			if cx > 1 and cx < sz - 2 and cy > 1 and cy < sz - 2:
