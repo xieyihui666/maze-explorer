@@ -340,10 +340,7 @@ func _process(delta):
 				time_sync_timer = 0.0
 				sync_time.rpc(time_left)
 
-func is_passable(pos: Vector2) -> bool:
-	var sz = GameState.maze_size
-	if noclip:
-		return true
+func is_in_bounds(pos: Vector2) -> bool:
 	var sz = GameState.maze_size
 	var cx = int(pos.x / CELL)
 	var cy = int(pos.y / CELL)
@@ -367,8 +364,6 @@ func is_in_bounds(pos: Vector2) -> bool:
 	var cx = int(pos.x / CELL)
 	var cy = int(pos.y / CELL)
 	return cx >= 0 and cx < sz and cy >= 0 and cy < sz
-
-func _draw():
 
 func _draw():
 	if maze.is_empty():
