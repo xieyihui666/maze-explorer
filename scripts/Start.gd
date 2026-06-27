@@ -135,8 +135,6 @@ func _input(event):
 		show_help = true; $UI/HelpPanel.visible = true
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_N:
 		show_nickname = true; $UI/NickPanel.visible = true; $UI/NickPanel/NameInput.text = my_nickname
-	elif event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
-		$UI/SettingsPanel.open()
 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var mpos = $UI/NickLabel.get_local_mouse_position()

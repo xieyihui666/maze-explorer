@@ -587,10 +587,6 @@ func _input(event):
 		$HUD/HelpPanel.visible = true
 		return
 
-	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
-		$HUD/SettingsPanel.open()
-		return
-
 	if $HUD/SettingsPanel.visible:
 		return
 
