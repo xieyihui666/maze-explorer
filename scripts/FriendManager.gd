@@ -13,21 +13,30 @@ static func get_friends() -> Array:
 		return []
 	return data
 
-static func add_friend(name: String, ip: String):
+static func add_friend(nickname: String, ip: String):
 	var friends = get_friends()
 	for fr in friends:
-		if fr["ip"] == ip:
+		if fr["nick"] == nickname:
+			fr["ip"] = ip
+			save(friends)
 			return
-	friends.append({"name": name, "ip": ip})
+	friends.append({"nick": nickname, "ip": ip})
 	save(friends)
 
-static func remove_friend(ip: String):
+static func remove_friend(nickname: String):
 	var friends = get_friends()
 	var new_list = []
 	for fr in friends:
-		if fr["ip"] != ip:
+		if fr["nick"] != nickname:
 			new_list.append(fr)
 	save(new_list)
+
+static func get_ip(nickname: String) -> String:
+	var friends = get_friends()
+	for fr in friends:
+		if fr["nick"] == nickname:
+			return fr["ip"]
+	return ""
 
 static func save(friends: Array):
 	var f = FileAccess.open(PATH, FileAccess.WRITE)

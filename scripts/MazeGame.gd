@@ -719,4 +719,8 @@ func exec_cheat(code: String):
 		cheat_teleport = true
 	elif code == "shubiao":
 		mouse_guide = not mouse_guide
+	elif code == "daoju":
+		for i in range(5):
+			inventory[i] += 1
+		update_hud()
 	$HUD/CheatPanel/Input.release_focus()

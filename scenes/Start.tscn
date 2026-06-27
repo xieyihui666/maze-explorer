@@ -14,28 +14,47 @@ color = Color(0.04, 0.04, 0.08, 1)
 
 [node name="Title" type="Label" parent="UI"]
 offset_left = 710
-offset_top = 80
+offset_top = 60
 offset_right = 1210
-offset_bottom = 150
+offset_bottom = 130
 text = "迷宫探索者"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 50
 
+[node name="NickLabel" type="Label" parent="UI"]
+offset_left = 1700
+offset_top = 20
+offset_right = 1900
+offset_bottom = 50
+text = ""
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 16
+visible = false
+
+[node name="NickHint" type="Label" parent="UI"]
+offset_left = 1700
+offset_top = 50
+offset_right = 1900
+offset_bottom = 70
+text = "按N改名"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 11
+
 [node name="Hint" type="Label" parent="UI"]
 offset_left = 660
-offset_top = 160
+offset_top = 140
 offset_right = 1260
-offset_bottom = 200
+offset_bottom = 180
 text = "↑↓ 选择模式  Enter 开始  U 排行榜  V 说明"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 18
 
 [node name="Rows" type="VBoxContainer" parent="UI"]
 offset_left = 460
-offset_top = 240
+offset_top = 220
 offset_right = 1460
 offset_bottom = 840
-theme_override_constants/separation = 15
+theme_override_constants/separation = 12
 
 [node name="Row0" type="Panel" parent="UI/Rows"]
 custom_minimum_size = Vector2(1000, 150)
@@ -60,9 +79,9 @@ mouse_filter = 2
 
 [node name="Info" type="Label" parent="UI/Rows/Row0"]
 offset_left = 30
-offset_top = 95
+offset_top = 100
 offset_right = 500
-offset_bottom = 125
+offset_bottom = 130
 text = ""
 theme_override_font_sizes/font_size = 16
 mouse_filter = 2
@@ -90,9 +109,9 @@ mouse_filter = 2
 
 [node name="Info" type="Label" parent="UI/Rows/Row1"]
 offset_left = 30
-offset_top = 95
+offset_top = 100
 offset_right = 500
-offset_bottom = 125
+offset_bottom = 130
 text = ""
 theme_override_font_sizes/font_size = 16
 mouse_filter = 2
@@ -120,9 +139,9 @@ mouse_filter = 2
 
 [node name="Info" type="Label" parent="UI/Rows/Row2"]
 offset_left = 30
-offset_top = 95
+offset_top = 100
 offset_right = 500
-offset_bottom = 125
+offset_bottom = 130
 text = ""
 theme_override_font_sizes/font_size = 16
 mouse_filter = 2
@@ -164,9 +183,9 @@ horizontal_alignment = 1
 
 [node name="Footer" type="Label" parent="UI"]
 offset_left = 660
-offset_top = 920
+offset_top = 900
 offset_right = 1260
-offset_bottom = 960
+offset_bottom = 940
 text = "WASD / 方向键 移动  |  找到绿色出口"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 14
@@ -236,14 +255,13 @@ U→排行榜  V→说明  Esc→退出
 
 === 游戏内 ===
 
-WASD/方向键→移动
-左键小地图→放大  Esc→暂停
-Z→作弊  V→说明
+WASD/方向键→移动  Esc→暂停
+左键小地图→放大  Z→作弊
 
 === 多人联机 ===
 
-合作: 创建→生成房间码→好友加入
-比赛: 谁先到出口谁赢
+创建房间→生成6位房间码
+合作:携手找出口  比赛:谁先到谁赢
 E键→传送队友"
 theme_override_font_sizes/font_size = 15
 
@@ -316,51 +334,69 @@ offset_bottom = 1080
 color = Color(0, 0, 0, 0.7)
 
 [node name="RoomBox" type="ColorRect" parent="UI/RoomPanel"]
-offset_left = 660
-offset_top = 260
-offset_right = 1260
-offset_bottom = 780
+offset_left = 560
+offset_top = 200
+offset_right = 1360
+offset_bottom = 840
 color = Color(0.06, 0.06, 0.14, 0.95)
 
 [node name="Title" type="Label" parent="UI/RoomPanel"]
-offset_left = 760
-offset_top = 280
-offset_right = 1160
-offset_bottom = 320
+offset_left = 710
+offset_top = 220
+offset_right = 1210
+offset_bottom = 260
 text = "联机合作"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 24
 
 [node name="CreateBtn" type="Button" parent="UI/RoomPanel"]
 offset_left = 760
-offset_top = 350
+offset_top = 290
 offset_right = 1160
-offset_bottom = 400
+offset_bottom = 340
 text = "创建房间"
 
 [node name="JoinBtn" type="Button" parent="UI/RoomPanel"]
 offset_left = 760
-offset_top = 420
+offset_top = 360
 offset_right = 1160
-offset_bottom = 470
+offset_bottom = 410
 text = "加入房间（输入IP）"
 
 [node name="IPInput" type="LineEdit" parent="UI/RoomPanel"]
 offset_left = 760
-offset_top = 490
+offset_top = 430
 offset_right = 1160
-offset_bottom = 530
+offset_bottom = 470
 placeholder_text = "输入好友IP地址"
 text = "127.0.0.1"
 
 [node name="RoomCode" type="Label" parent="UI/RoomPanel"]
-offset_left = 660
-offset_top = 560
-offset_right = 1260
-offset_bottom = 640
+offset_left = 610
+offset_top = 300
+offset_right = 1310
+offset_bottom = 420
 text = ""
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 56
+visible = false
+
+[node name="IPLabel" type="Label" parent="UI/RoomPanel"]
+offset_left = 760
+offset_top = 440
+offset_right = 1160
+offset_bottom = 470
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+visible = false
+
+[node name="StartBtn" type="Button" parent="UI/RoomPanel"]
+offset_left = 810
+offset_top = 500
+offset_right = 1110
+offset_bottom = 550
+text = "开始游戏"
 visible = false
 
 [node name="CodeJoin" type="Control" parent="UI/RoomPanel"]
@@ -368,46 +404,46 @@ visible = false
 
 [node name="CodeTitle" type="Label" parent="UI/RoomPanel/CodeJoin"]
 offset_left = 760
-offset_top = 350
+offset_top = 290
 offset_right = 1160
-offset_bottom = 390
+offset_bottom = 330
 text = "输入好友的房间码和IP"
 horizontal_alignment = 1
 
 [node name="CodeInput" type="LineEdit" parent="UI/RoomPanel/CodeJoin"]
 offset_left = 810
-offset_top = 410
+offset_top = 350
 offset_right = 1110
-offset_bottom = 450
+offset_bottom = 390
 placeholder_text = "6位房间码"
 
 [node name="IPInput2" type="LineEdit" parent="UI/RoomPanel/CodeJoin"]
 offset_left = 810
-offset_top = 470
+offset_top = 410
 offset_right = 1110
-offset_bottom = 510
+offset_bottom = 450
 placeholder_text = "好友IP地址"
 text = "127.0.0.1"
 
 [node name="CodeBtn" type="Button" parent="UI/RoomPanel/CodeJoin"]
 offset_left = 860
-offset_top = 530
+offset_top = 470
 offset_right = 1060
-offset_bottom = 570
+offset_bottom = 510
 text = "加入"
 
 [node name="FriendsBtn" type="Button" parent="UI/RoomPanel"]
 offset_left = 760
-offset_top = 660
+offset_top = 580
 offset_right = 1160
-offset_bottom = 700
+offset_bottom = 620
 text = "从好友列表选择IP"
 
 [node name="BackBtn" type="Button" parent="UI/RoomPanel"]
 offset_left = 860
-offset_top = 720
+offset_top = 640
 offset_right = 1060
-offset_bottom = 755
+offset_bottom = 680
 text = "返回"
 
 [node name="FriendPanel" type="Control" parent="UI"]
@@ -442,12 +478,12 @@ offset_bottom = 620
 text = ""
 theme_override_font_sizes/font_size = 16
 
-[node name="NameInput" type="LineEdit" parent="UI/FriendPanel"]
+[node name="NickInput" type="LineEdit" parent="UI/FriendPanel"]
 offset_left = 660
 offset_top = 640
 offset_right = 960
 offset_bottom = 680
-placeholder_text = "好友名称"
+placeholder_text = "好友昵称"
 
 [node name="IPInput" type="LineEdit" parent="UI/FriendPanel"]
 offset_left = 980
@@ -469,3 +505,49 @@ offset_top = 700
 offset_right = 1160
 offset_bottom = 740
 text = "关闭"
+
+[node name="NickPanel" type="Control" parent="UI"]
+visible = false
+
+[node name="NBG" type="ColorRect" parent="UI/NickPanel"]
+offset_right = 1920
+offset_bottom = 1080
+color = Color(0, 0, 0, 0.7)
+
+[node name="NBox" type="ColorRect" parent="UI/NickPanel"]
+offset_left = 760
+offset_top = 390
+offset_right = 1160
+offset_bottom = 590
+color = Color(0.06, 0.06, 0.14, 0.95)
+
+[node name="Title" type="Label" parent="UI/NickPanel"]
+offset_left = 810
+offset_top = 410
+offset_right = 1110
+offset_bottom = 450
+text = "设置昵称"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+
+[node name="NameInput" type="LineEdit" parent="UI/NickPanel"]
+offset_left = 810
+offset_top = 470
+offset_right = 1110
+offset_bottom = 510
+placeholder_text = "输入你的昵称(最长6字)"
+max_length = 6
+
+[node name="SetBtn" type="Button" parent="UI/NickPanel"]
+offset_left = 860
+offset_top = 530
+offset_right = 1060
+offset_bottom = 570
+text = "确定"
+
+[node name="CloseBtn" type="Button" parent="UI/NickPanel"]
+offset_left = 860
+offset_top = 530
+offset_right = 1060
+offset_bottom = 570
+text = "取消"

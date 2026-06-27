@@ -12,8 +12,10 @@ var show_help = false
 var show_network = false
 var show_room = false
 var show_friends = false
+var show_nickname = false
 var net_mode = 0
 var room_code = ""
+var my_nickname = ""
 
 func _ready():
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -23,6 +25,11 @@ func _ready():
 	$UI/NetworkPanel.visible = false
 	$UI/RoomPanel.visible = false
 	$UI/FriendPanel.visible = false
+	$UI/NickPanel.visible = false
+	var p = load("res://scripts/PlayerProfile.gd")
+	my_nickname = p.get_nickname()
+	$UI/NickLabel.text = my_nickname
+	$UI/NickLabel.visible = true
 	$UI/ExitPanel/QuitBtn.pressed.connect(func(): get_tree().quit())
 	$UI/ExitPanel/ContinueBtn.pressed.connect(func(): show_exit = false; $UI/ExitPanel.visible = false)
 	$UI/NetworkPanel/SoloBtn.pressed.connect(func(): start_game(false, false, false))
@@ -32,10 +39,13 @@ func _ready():
 	$UI/RoomPanel/CreateBtn.pressed.connect(create_room)
 	$UI/RoomPanel/JoinBtn.pressed.connect(join_room)
 	$UI/RoomPanel/CodeJoin/CodeBtn.pressed.connect(code_join)
+	$UI/RoomPanel/StartBtn.pressed.connect(func(): start_game(true, true, net_mode == 1))
 	$UI/RoomPanel/BackBtn.pressed.connect(func(): show_room = false; $UI/RoomPanel.visible = false)
 	$UI/RoomPanel/FriendsBtn.pressed.connect(show_friend_list)
 	$UI/FriendPanel/AddBtn.pressed.connect(add_friend)
 	$UI/FriendPanel/CloseBtn.pressed.connect(func(): show_friends = false; $UI/FriendPanel.visible = false)
+	$UI/NickPanel/SetBtn.pressed.connect(set_nickname)
+	$UI/NickPanel/CloseBtn.pressed.connect(func(): show_nickname = false; $UI/NickPanel.visible = false)
 	for i in 3:
 		var row = $UI/Rows.get_child(i)
 		row.gui_input.connect(_on_row_click.bind(i))
@@ -81,6 +91,12 @@ func _input(event):
 		if event.is_action_pressed("ui_cancel"):
 			show_friends = false; $UI/FriendPanel.visible = false
 		return
+	if show_nickname:
+		if event.is_action_pressed("ui_accept"):
+			set_nickname()
+		elif event.is_action_pressed("ui_cancel"):
+			show_nickname = false; $UI/NickPanel.visible = false
+		return
 	if show_room:
 		if event.is_action_pressed("ui_cancel"):
 			show_room = false; $UI/RoomPanel.visible = false
@@ -114,6 +130,13 @@ func _input(event):
 		show_exit = true; $UI/ExitPanel.visible = true
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_V:
 		show_help = true; $UI/HelpPanel.visible = true
+	elif event is InputEventKey and event.pressed and event.keycode == KEY_N:
+		show_nickname = true; $UI/NickPanel.visible = true; $UI/NickPanel/NameInput.text = my_nickname
+
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var mpos = $UI/NickLabel.get_local_mouse_position()
+		if mpos.x >= 0 and mpos.x <= 200 and mpos.y >= 0 and mpos.y <= 30:
+			show_nickname = true; $UI/NickPanel.visible = true; $UI/NickPanel/NameInput.text = my_nickname
 
 func show_network_panel():
 	show_network = true
@@ -121,37 +144,45 @@ func show_network_panel():
 
 func show_room_options(mode: int):
 	net_mode = mode
-	show_network = false
-	$UI/NetworkPanel.visible = false
-	show_room = true
-	$UI/RoomPanel.visible = true
-	var title = "联机合作" if mode == 0 else "联机比赛"
-	$UI/RoomPanel/Title.text = title
+	show_network = false; $UI/NetworkPanel.visible = false
+	show_room = true; $UI/RoomPanel.visible = true
+	$UI/RoomPanel/Title.text = "联机合作" if mode == 0 else "联机比赛"
 	$UI/RoomPanel/CreateBtn.visible = true
 	$UI/RoomPanel/JoinBtn.visible = true
+	$UI/RoomPanel/IPInput.visible = true
 	$UI/RoomPanel/CodeJoin.visible = false
 	$UI/RoomPanel/RoomCode.visible = false
+	$UI/RoomPanel/IPLabel.visible = false
+	$UI/RoomPanel/StartBtn.visible = false
+	$UI/RoomPanel/FriendsBtn.visible = true
+	$UI/RoomPanel/BackBtn.visible = true
 
 func show_code_join():
-	show_network = false
-	$UI/NetworkPanel.visible = false
-	show_room = true
-	$UI/RoomPanel.visible = true
+	show_network = false; $UI/NetworkPanel.visible = false
+	show_room = true; $UI/RoomPanel.visible = true
 	$UI/RoomPanel/Title.text = "输入房间码加入"
 	$UI/RoomPanel/CreateBtn.visible = false
 	$UI/RoomPanel/JoinBtn.visible = false
+	$UI/RoomPanel/IPInput.visible = false
 	$UI/RoomPanel/CodeJoin.visible = true
 	$UI/RoomPanel/RoomCode.visible = false
+	$UI/RoomPanel/IPLabel.visible = false
+	$UI/RoomPanel/StartBtn.visible = false
+	$UI/RoomPanel/FriendsBtn.visible = false
+	$UI/RoomPanel/BackBtn.visible = true
 
 func create_room():
-	room_code = str(randi() % 900000 + 100000)
+	room_code = str(randi_range(100000, 999999))
 	NetworkManager.start_host()
-	$UI/RoomPanel/RoomCode.text = "房间码  " + room_code + "\nIP  " + NetworkManager.get_local_ip()
+	$UI/RoomPanel/RoomCode.text = room_code
 	$UI/RoomPanel/RoomCode.visible = true
+	$UI/RoomPanel/IPLabel.text = my_nickname + "  |  IP: " + NetworkManager.get_local_ip()
+	$UI/RoomPanel/IPLabel.visible = true
+	$UI/RoomPanel/StartBtn.visible = true
 	$UI/RoomPanel/CreateBtn.visible = false
 	$UI/RoomPanel/JoinBtn.visible = false
+	$UI/RoomPanel/IPInput.visible = false
 	$UI/RoomPanel/CodeJoin.visible = false
-	start_game(true, true, net_mode == 1)
 
 func join_room():
 	var ip = $UI/RoomPanel/IPInput.text
@@ -164,8 +195,7 @@ func code_join():
 	start_game(true, false, false)
 
 func show_friend_list():
-	show_friends = true
-	$UI/FriendPanel.visible = true
+	show_friends = true; $UI/FriendPanel.visible = true
 	refresh_friend_list()
 
 func refresh_friend_list():
@@ -174,18 +204,27 @@ func refresh_friend_list():
 	var list = $UI/FriendPanel/FriendList
 	var text = ""
 	for fr in friends:
-		text += "%s  [%s]\n" % [fr["name"], fr["ip"]]
+		text += fr["nick"] + "  [" + fr["ip"] + "]\n"
 	list.text = text
 
 func add_friend():
 	var FriendManager = load("res://scripts/FriendManager.gd")
-	var name = $UI/FriendPanel/NameInput.text
+	var nick = $UI/FriendPanel/NickInput.text
 	var ip = $UI/FriendPanel/IPInput.text
-	if name != "" and ip != "":
-		FriendManager.add_friend(name, ip)
-		$UI/FriendPanel/NameInput.text = ""
+	if nick != "" and ip != "":
+		FriendManager.add_friend(nick, ip)
+		$UI/FriendPanel/NickInput.text = ""
 		$UI/FriendPanel/IPInput.text = ""
 		refresh_friend_list()
+
+func set_nickname():
+	var name = $UI/NickPanel/NameInput.text.strip_edges()
+	if name != "" and name.length() <= 6:
+		my_nickname = name
+		var p = load("res://scripts/PlayerProfile.gd")
+		p.set_nickname(name)
+		$UI/NickLabel.text = name
+		show_nickname = false; $UI/NickPanel.visible = false
 
 func start_game(multi: bool, as_host: bool, is_race: bool):
 	GameState.mode = selected
