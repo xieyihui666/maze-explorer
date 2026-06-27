@@ -37,7 +37,13 @@ static func load_display_settings():
 	if data != null:
 		display_width = data.get("width", 1920)
 		display_height = data.get("height", 1080)
-		window_mode = data.get("mode", 3)
+		var m = data.get("mode", 3)
+		# 旧版 bug：mode 直接存了 display_mode_idx (0/1/2)，导致 1=最小化 2=最大化
+		# 合法值只能是 DisplayServer 窗口模式枚举: 0,3,4
+		if m in [0, 3, 4]:
+			window_mode = m
+		else:
+			window_mode = 3
 
 static func save_display_settings():
 	var data = {"width": display_width, "height": display_height, "mode": window_mode}
@@ -47,7 +53,8 @@ static func save_display_settings():
 
 static func apply_display():
 	DisplayServer.window_set_size(Vector2i(display_width, display_height))
-	DisplayServer.window_set_mode(window_mode)
+	if DisplayServer.window_get_mode() != window_mode:
+		DisplayServer.window_set_mode(window_mode)
 
 static func reset():
 	score = 0

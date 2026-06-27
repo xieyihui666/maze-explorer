@@ -7,6 +7,12 @@ var display_presets = [
 	{"name": "3840x2160", "w": 3840, "h": 2160},
 ]
 var display_mode_names = ["窗口", "窗口化全屏", "全屏"]
+# 映射到 DisplayServer 窗口模式枚举值
+const MODE_VALUES = [
+	DisplayServer.WINDOW_MODE_WINDOWED,
+	DisplayServer.WINDOW_MODE_FULLSCREEN,
+	DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN,
+]
 var display_preset_idx = 0
 var display_mode_idx = 2
 
@@ -30,8 +36,16 @@ func open():
 		if display_presets[i]["w"] == GameState.display_width and display_presets[i]["h"] == GameState.display_height:
 			display_preset_idx = i
 			break
-	display_mode_idx = GameState.window_mode
-	if display_mode_idx < 0 or display_mode_idx >= display_mode_names.size():
+	# 从存储的窗口模式值反查 display_mode_idx
+	var stored = GameState.window_mode
+	var found = false
+	for i in range(MODE_VALUES.size()):
+		if MODE_VALUES[i] == stored:
+			display_mode_idx = i
+			found = true
+			break
+	if not found:
+		# 旧版脏数据或未知值，回退到全屏
 		display_mode_idx = 2
 	_update_labels()
 	visible = true
@@ -52,7 +66,7 @@ func _save_and_close():
 	var p = display_presets[display_preset_idx]
 	GameState.display_width = p["w"]
 	GameState.display_height = p["h"]
-	GameState.window_mode = display_mode_idx
+	GameState.window_mode = MODE_VALUES[display_mode_idx]
 	GameState.save_display_settings()
 	GameState.apply_display()
 	visible = false
